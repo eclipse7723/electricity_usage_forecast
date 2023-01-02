@@ -8,6 +8,7 @@ class Device:
         self.name = params["name"]
         self.icon_path = params.get("icon_path", DEFAULT_DEVICE_ICON_PATH)
 
+        self.__amount = 1
         self.__power = 0    # watt
         self.__usage_days = 0
         self.__usage_day_hours = 0
@@ -18,6 +19,7 @@ class Device:
             self.set_watt(params["watt"])
         elif "kWh" in params:
             self.set_kWh(params["kWh"])
+        self.set_amount(params.get("amount", 1))
 
     @property
     def usage_days(self):
@@ -54,3 +56,12 @@ class Device:
         if power < 0:
             raise ValueError(f"power ({power}) must be positive value")
         self.__power = power
+
+    @property
+    def amount(self):
+        return self.__amount
+
+    def set_amount(self, amount):
+        if amount < 1:
+            raise ValueError(f"amount should be >= 1, not {amount}")
+        self.__amount = amount

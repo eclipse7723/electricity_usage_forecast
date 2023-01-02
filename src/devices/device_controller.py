@@ -37,3 +37,23 @@ class DeviceController:
     def create_device(self, params):
         device = DeviceManager.create_device(params)
         return device
+
+    def increase_device_amount(self, identity):
+        if self.has_device(identity) is False:
+            return False
+
+        device = self.get_device(identity)
+        device.set_amount(device.amount + 1)
+        return True
+
+    def decrease_device_amount(self, identity):
+        if self.has_device(identity) is False:
+            return False
+
+        device = self.get_device(identity)
+        if device.amount == 1:
+            self.remove_device(identity)
+        else:
+            device.set_amount(device.amount - 1)
+
+        return True
