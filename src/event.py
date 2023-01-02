@@ -1,11 +1,20 @@
 import warnings
 
 
+class EventCollection:
+    events = {}
+
+    @staticmethod
+    def get(name):
+        return EventCollection.events.get(name)
+
+
 class Event:
 
     def __init__(self, name):
         self.name = name
         self.observers = []
+        EventCollection.events[name] = self
 
     def addObserver(self, fn, *args, **kwargs):
         functor = Functor(fn, *args, **kwargs)
