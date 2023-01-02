@@ -61,6 +61,7 @@ class DeviceManager:
             create_params = json.load(f)
 
         for device_id, params in create_params.items():
+            params["identity"] = device_id
             DeviceManager.create_device(params)
 
     @staticmethod
