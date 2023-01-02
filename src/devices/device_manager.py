@@ -27,15 +27,27 @@ class DeviceManager:
 
     @staticmethod
     def create_device(params):
+        """
+            @param params: dict where required key is 'name'
+            @return: Device
+        """
+        if "name" not in params:
+            raise WrongDeviceParams(params.get("identity", "undefined"), params, "Device should has name!!!")
+
         if "identity" not in params:
             name = params["name"]
             identity = DeviceManager._generate_identity(name)
             params["identity"] = identity
 
-        if "icon_path" in params and os.path.exists(params["icon_path"]) is False:
-            raise FileNotFoundError(f"Device [{params['identity']}] icon not found: {params['icon_path']}")
+        if "icon_path" in params and params["icon_path"] is not None:
+            if os.path.exists(params["icon_path"]) is False:
+                raise FileNotFoundError(f"Device [{params['identity']}] icon not found: {params['icon_path']}")
 
-        device = Device(params)
+        try:
+            device = Device(params)
+        except Exception as e:
+            raise WrongDeviceParams(params["identity"], params, str(e))
+
         DeviceManager.devices[device.identity] = device
 
         return device
@@ -50,3 +62,9 @@ class DeviceManager:
 
         for device_id, params in create_params.items():
             DeviceManager.create_device(params)
+
+    @staticmethod
+    def remove_device(identity):
+        if DeviceManager.has_device(identity) is False:
+            return
+        del DeviceManager.devices[identity]

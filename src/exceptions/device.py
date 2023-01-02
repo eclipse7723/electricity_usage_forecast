@@ -6,5 +6,7 @@ class DeviceNotFound(Exception):
 
 class WrongDeviceParams(Exception):
     def __init__(self, identity, params, details=None):
-        exception_message = f"Device with id {identity!r} has wrong params:\n{params}\nDetails: {details}"
+        exception_message = f"Device with id {identity!r} has wrong params:\n{params}"
+        if details is not None:
+            exception_message += f"\nDetails: {details}"
         super(WrongDeviceParams, self).__init__(exception_message)

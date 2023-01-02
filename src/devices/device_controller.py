@@ -1,5 +1,5 @@
 from src.devices.device_manager import DeviceManager
-from src.exceptions.device import DeviceNotFound, WrongDeviceParams
+from src.exceptions.device import DeviceNotFound
 
 
 class DeviceController:
@@ -34,8 +34,6 @@ class DeviceController:
         except KeyError:
             return False
 
-    def create_device(self, params):    # todo
-        try:
-            device = DeviceController.create_device(..., params)
-        except WrongDeviceParams:
-            return None
+    def create_device(self, params):
+        device = DeviceManager.create_device(params)
+        return device
