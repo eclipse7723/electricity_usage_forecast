@@ -4,7 +4,7 @@ from src.settings import DEFAULT_DEVICE_ICON_PATH
 
 class Device:
     def __init__(self, params):
-        self._id = params["id"]
+        self.identity = params["identity"]
         self.name = params["name"]
         self.icon_path = params.get("icon_path", DEFAULT_DEVICE_ICON_PATH)
 
