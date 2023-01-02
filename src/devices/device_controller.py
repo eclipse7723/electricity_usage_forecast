@@ -1,8 +1,12 @@
 from src.devices.device_manager import DeviceManager
 from src.exceptions.device import DeviceNotFound
+from src.event import Event
 
 
 class DeviceController:
+
+    EVENT_CONNECT_DEVICE = Event("onDeviceConnect")
+    EVENT_DISCONNECT_DEVICE = Event("onDeviceDisconnect")
 
     def __init__(self):
         self.connected_devices = {}
@@ -23,13 +27,15 @@ class DeviceController:
         try:
             device = DeviceManager.get_device(identity)
             self.connected_devices[identity] = device
+            DeviceController.EVENT_CONNECT_DEVICE(device)
             return True
         except DeviceNotFound:
             return False
 
     def remove_device(self, identity):
         try:
-            del self.connected_devices[identity]
+            device = self.connected_devices.pop(identity)
+            DeviceController.EVENT_DISCONNECT_DEVICE(device)
             return True
         except KeyError:
             return False

@@ -1,8 +1,16 @@
 from src.model.period import Period
 from src.settings import DEFAULT_DEVICE_ICON_PATH
+from src.event import Event
 
 
 class Device:
+
+    EVENT_ICON_CHANGE = Event("onDeviceIconChange")
+    EVENT_USAGE_DAYS_UPDATE = Event("onDeviceUsageDaysUpdate")
+    EVENT_USAGE_HOURS_UPDATE = Event("onDeviceUsageHoursUpdate")
+    EVENT_POWER_UPDATE = Event("onDevicePowerUpdate")
+    EVENT_AMOUNT_UPDATE = Event("onDeviceAmountUpdate")
+
     def __init__(self, params):
         self.identity = params["identity"]
         self.name = params["name"]
@@ -31,6 +39,7 @@ class Device:
         if days < 0:
             raise ValueError(f"days ({days}) can't be negative")
         self.__usage_days = days
+        Device.EVENT_USAGE_DAYS_UPDATE(self, days)
 
     @property
     def usage_day_hours(self):
@@ -40,6 +49,7 @@ class Device:
         if hours < 0 or hours > 24:
             raise ValueError(f"hours must be in range [0, 24], not {hours}")
         self.__usage_day_hours = hours
+        Device.EVENT_USAGE_HOURS_UPDATE(self, hours)
 
     @property
     def power(self):
@@ -56,6 +66,7 @@ class Device:
         if power < 0:
             raise ValueError(f"power ({power}) must be positive value")
         self.__power = power
+        Device.EVENT_POWER_UPDATE(self, power)
 
     @property
     def amount(self):
@@ -65,3 +76,8 @@ class Device:
         if amount < 1:
             raise ValueError(f"amount should be >= 1, not {amount}")
         self.__amount = amount
+        Device.EVENT_AMOUNT_UPDATE(self, amount)
+
+    def set_icon(self, path):
+        self.icon_path = path
+        Device.EVENT_ICON_CHANGE(self, path)

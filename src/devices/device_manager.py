@@ -1,12 +1,15 @@
 from src.settings import DEFAULT_DEVICES_PATH
 from src.exceptions.device import DeviceNotFound, WrongDeviceParams
 from src.devices.device import Device
+from src.event import Event
 import json
 import time
 import os
 
 
 class DeviceManager:
+
+    EVENT_CREATE_DEVICE = Event("onDeviceCreate")
 
     devices = {}
 
@@ -49,6 +52,7 @@ class DeviceManager:
             raise WrongDeviceParams(params["identity"], params, str(e))
 
         DeviceManager.devices[device.identity] = device
+        DeviceManager.EVENT_CREATE_DEVICE(device)
 
         return device
 
