@@ -10,3 +10,6 @@ DEFAULT_TARIFF_ABOVE_PRICE = 1.68
 DEFAULT_DEVICES_PATH = "res/devices.json"
 DEFAULT_DEVICE_ICON_PATH = "res/icons/default.png"
 
+# general
+_DEBUG = True
+
