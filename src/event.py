@@ -14,6 +14,11 @@ class EventCollection:
         functor = event.addObserver(fn, *args, **kwargs)
         return functor
 
+    @staticmethod
+    def removeObservers():
+        for event in EventCollection.events.values():
+            event.removeObservers()
+
 
 class Event:
 
