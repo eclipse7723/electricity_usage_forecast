@@ -5,7 +5,7 @@ class App:
 
     __instance = None
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, interface, *args, **kwargs):
         # Singleton pattern
         if App.__instance is None:
             App.__instance = super().__new__(cls, *args, **kwargs)
