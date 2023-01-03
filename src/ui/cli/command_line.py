@@ -1,13 +1,16 @@
 from src.ui.base_interface import BaseInterface
 from src.ui.cli.components.device_card import DeviceCard
 from src.ui.cli.components.colors import Colors
+from src.settings import _DEBUG
+
+import traceback
 import os
 
 
 def with_accept_message(func):
-    def _wrapper():
-        func()
-        Colors.print("green", "Your changes has been accepted!")
+    def _wrapper(*args, **kwargs):
+        if func(*args, **kwargs) is True:
+            Colors.print("green", "Your changes has been accepted!")
     return _wrapper
 
 
@@ -32,6 +35,8 @@ class CommandLineInterface(BaseInterface):
 
     def _show_error(self, exception):
         """ notify user about error """
+        if _DEBUG is True:
+            traceback.print_stack()
         Colors.print("red", f"[!!!] {exception}")
 
     def _show_tip(self, text):
@@ -64,7 +69,7 @@ class CommandLineInterface(BaseInterface):
         try:
             func()
         except Exception as e:
-            self._show_error(str(e))
+            self._show_error(f"{e.__class__.__name__}: {str(e)}")
 
     # commands
 
@@ -78,7 +83,7 @@ class CommandLineInterface(BaseInterface):
     @with_accept_message
     def edit_my_device(self):
         if len(self.my_devices) == 0:
-            self._show_error("Connect at least one device. Type 'add device'")
+            self._show_error("Connect at least one device. Type 'add device'!")
             return
 
         identity = input("Device identity: ").lower()
@@ -88,14 +93,20 @@ class CommandLineInterface(BaseInterface):
 
         card = self.my_devices[identity]
         card.edit()
+        return True
 
     @with_accept_message
     def add_device(self):
         not_connected_devices = self.controller.get_not_connected_devices()
+
+        if len(not_connected_devices) == 0:
+            Colors.print("yellow", "No devices to connect :(")
+            return
+
         print("List of not connected devices:")
         for device in not_connected_devices:
             print(f" [{Colors.wrap('yellow', device.identity)}] {device.name!r} ({device.power} Watt)")
-        print("Type identity from square brackets to add device")
+        self._show_tip("Type identity from square brackets to add device")
 
         identity = input("Identity: ").lower()
 
@@ -104,19 +115,28 @@ class CommandLineInterface(BaseInterface):
             return
 
         self.controller.connect_device(identity)
+        return True
 
     @with_accept_message
     def remove_device(self):
+        connected_devices = self.controller.get_connected_devices()
+
+        if len(connected_devices) == 0:
+            Colors.print("yellow", "No devices to disconnect :(")
+            self._show_tip("Type 'add devices' to connect a new device!")
+            return
+
         identity = input("Identity: ").lower()
 
-        if identity not in self.controller.get_connected_devices():
+        if identity not in connected_devices:
             self._show_error(f"Device with id {identity!r} not found in connected devices - type 'my devices' to check")
             return
 
         self.controller.disconnect_device(identity)
+        return True
 
     def calculate(self):
-        energy = self.controller.get_energy_consumption()
+        energy = self.controller.get_period_energy_consumption()
         price = self.controller.get_period_price()
         period = self.controller.get_period()
         print(f"Your energy consumption for period of {Colors.wrap('yellow', period)} days"
@@ -130,6 +150,7 @@ class CommandLineInterface(BaseInterface):
     def change_current_period(self):
         days = int(input("days: "))
         self.controller.change_period(days)
+        return True
 
     def show_tariff(self):
         threshold = self.controller.get_tariff_threshold()
@@ -145,6 +166,7 @@ class CommandLineInterface(BaseInterface):
         above_price = float(input("New price above threshold: "))
         self.controller.change_tariff_threshold(threshold)
         self.controller.change_tariff_price(below_price, above_price)
+        return True
 
     # interface flow
 
