@@ -1,5 +1,5 @@
 from src.devices.device_manager import DeviceManager
-from src.exceptions.device import DeviceNotFound
+from src.exceptions.device import DeviceNotFound, DeviceAlreadyConnected
 from src.event import Event
 
 
@@ -24,6 +24,8 @@ class DeviceController:
         return device
 
     def add_device(self, identity):
+        if identity in self.connected_devices:
+            raise DeviceAlreadyConnected(identity)
         try:
             device = DeviceManager.get_device(identity)
             self.connected_devices[identity] = device
