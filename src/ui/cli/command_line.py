@@ -2,6 +2,7 @@ from src.ui.base_interface import BaseInterface
 from src.ui.cli.components.device_card import DeviceCard
 from src.ui.cli.components.colors import Colors
 from src.settings import _DEBUG
+from src.event import EventCollection
 
 import traceback
 import os
@@ -40,7 +41,7 @@ class CommandLineInterface(BaseInterface):
         Colors.print("red", f"[!!!] {exception}")
 
     def _show_tip(self, text):
-        Colors.print("yellow", f"[*]{text}")
+        print(f"{Colors.wrap('yellow', '[*]')} {text}")
 
     # command's base
 
@@ -103,14 +104,14 @@ class CommandLineInterface(BaseInterface):
             Colors.print("yellow", "No devices to connect :(")
             return
 
-        print("List of not connected devices:")
+        self._show_tip("List of not connected devices:")
         for device in not_connected_devices:
             print(f" [{Colors.wrap('yellow', device.identity)}] {device.name!r} ({device.power} Watt)")
         self._show_tip("Type identity from square brackets to add device")
 
         identity = input("Identity: ").lower()
 
-        if identity not in not_connected_devices:
+        if identity not in [device.identity for device in not_connected_devices]:
             self._show_error(f"Device with id '{identity}' not found")
             return
 
@@ -128,7 +129,7 @@ class CommandLineInterface(BaseInterface):
 
         identity = input("Identity: ").lower()
 
-        if identity not in connected_devices:
+        if identity not in [device.identity for device in connected_devices]:
             self._show_error(f"Device with id {identity!r} not found in connected devices - type 'my devices' to check")
             return
 
@@ -168,11 +169,26 @@ class CommandLineInterface(BaseInterface):
         self.controller.change_tariff_price(below_price, above_price)
         return True
 
+    # callbacks
+
+    def _add_observers(self):
+        EventCollection.addObserver("onDeviceConnect", self._cb_device_connected)
+        EventCollection.addObserver("onDeviceDisconnect", self._cb_device_disconnected)
+
+    def _cb_device_connected(self, device):
+        self.my_devices[device.identity] = DeviceCard(device)
+        return False
+
+    def _cb_device_disconnected(self, device):
+        del self.my_devices[device.identity]
+        return False
+
     # interface flow
 
     def _prepare(self):
         os.system("title Electricity usage forecast")
         os.system("cls")
+        self._add_observers()
         self.show_commands()
 
     def _start(self):
