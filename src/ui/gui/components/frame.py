@@ -9,7 +9,7 @@ class Frame(tk.Frame):
 
     def create_widget(self, name, type_widget, **params):
         widget = type_widget(master=self, **params)
-        widget.pack(pack=params.get("pack_side", tk.LEFT))
+        widget.pack(pack=params.get("pack_side", tk.LEFT), fill=params.get("pack_fill", tk.NONE))
         self.add_widget(name, widget)
         return widget
 
