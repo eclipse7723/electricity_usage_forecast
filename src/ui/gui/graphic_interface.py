@@ -3,6 +3,7 @@ from src.ui.gui.components.frame import Frame
 from src.ui.gui.components.entry import Entry
 from src.ui.gui.components.button import Button
 from src.ui.gui.components.label import Label
+from src.ui.gui.blocks.device_card import DeviceCard
 
 import tkinter as tk
 from tkinter import ttk
@@ -11,10 +12,17 @@ from tkinter import filedialog
 
 class GraphicInterface(BaseInterface, tk.Tk):
 
+    width = 440
+    height = 310
+
     def _set_params(self):
         self.layers = {}
 
     def _prepare(self):
+        self.title("Electricity usage forecast")
+        self.geometry(f"{self.width}x{self.height}")
+        self.resizable(False, False)
+
         self.create_content()
         self.add_observers()
 
@@ -47,17 +55,41 @@ class GraphicInterface(BaseInterface, tk.Tk):
 
     def _create_tariff_period_layer(self):
         layer = self.create_layer("tariff_period")
+        layer.pack(side=tk.TOP, fill=tk.X)
 
-        tariff_label = layer.create_widget("tariff_label", Label)
-        tariff_entry = layer.create_widget("tariff_entry", Entry)
+        validator1 = self.register(self._validate_positive_float)
+        tariff_block = layer.create_widget("tariff", Frame, pack_side=tk.TOP)
+        tariff_block.create_widget("title", Label, text="Tariff (price per used kWh) with threshold")
+        tariff_block.create_widget("below_th_entry", Entry,
+                                   validate="key", validatecommand=(validator1, "%d", "%P", "%S"))
+        tariff_block.create_widget("sep1", Label, text=" / ")
+        tariff_block.create_widget("threshold", Entry,
+                                   validate="key", validatecommand=(validator1, "%d", "%P", "%S"))
+        tariff_block.create_widget("sep2", Label, text=" / ")
+        tariff_block.create_widget("above_th_entry", Entry,
+                                   validate="key", validatecommand=(validator1, "%d", "%P", "%S"))
 
-        period_label = layer.create_widget("period_label", Label)
-        period_entry = layer.create_widget("period_entry", Entry)
+        validator2 = self.register(self._validate_positive_integer)
+        period_block = layer.create_widget("period", Frame, pack_side=tk.TOP)
+        period_block.create_widget("label", Label, text="Period (in days)")
+        period_block.create_widget("entry", Entry, validate="key", validatecommand=(validator2, "%d", "%S"))
 
     def _create_connected_devices_layer(self):
         layer = self.create_layer("connected_devices")
 
-        pass
+        for device in self.controller.get_connected_devices():
+            self.__add_connected_device(device)
+
+    def __add_connected_device(self, device):
+        layer = self.layers["connected_devices"]
+
+        card = DeviceCard(device=device)
+        layer.add_widget(device.identity, card)
+        card.pack(side=tk.TOP)
+
+    def __remove_connected_device(self, device):
+        layer = self.layers["connected_devices"]
+        layer.remove_widget(device.identity)
 
     def _create_calculate_layer(self):
         layer = self.create_layer("calculate")
@@ -69,6 +101,24 @@ class GraphicInterface(BaseInterface, tk.Tk):
 
         res_energy = layer.create_widget("energy_results", Label)
         res_price = layer.create_widget("price_results", Label)
+
+    # VALIDATORS -----------------------------------------------------------
+
+    def _validate_positive_float(self, action, current_text, input_char):
+        if action == "1":     # insert
+            if input_char == "." and current_text.count(".") > 1:
+                return False
+            elif input_char.isdigit() is False:
+                return False
+        return True
+
+    def _validate_positive_integer(self, action, input_char):
+        if action == "1":     # insert
+            if input_char.isdigit() is False:
+                return False
+        return True
+
+    # CALLBACKS ------------------------------------------------------------
 
     # REACTIONS ------------------------------------------------------------
 
