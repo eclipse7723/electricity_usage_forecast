@@ -18,7 +18,7 @@ class Colors:
     @staticmethod
     def wrap(color, text):
         color_code = Colors.palette.get(color, Colors.default())
-        return color_code + text + Colors.reset
+        return color_code + str(text) + Colors.reset
 
     @staticmethod
     def default():
