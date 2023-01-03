@@ -10,18 +10,13 @@ class Model:
         self.period = Period()
         self.devices = DeviceController()
 
-    def change_days_period(self, days):
-        self.period.update_days(days)
-
-    def get_days_period(self):
-        return self.period.get_days()
-
-    def calculate_total_price(self, total_energy):
-        price = self.tariff.calculate_price(total_energy)
+    def calculate_total_price(self, total_watt):
+        total_kWh = total_watt / 1000.0
+        price = self.tariff.calculate_price(total_kWh)
         return price
 
     def calculate_energy_consumption(self):
         total_energy = 0
         for device in self.devices.get_devices():
-            total_energy += device.usage_day_hours * device.usage_day_hours
+            total_energy += device.usage_days * device.usage_day_hours
         return total_energy

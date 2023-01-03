@@ -35,3 +35,7 @@ class Tariff:
         price = price_below_threshold + price_above_threshold
 
         return price
+
+    def get_price(self):
+        """ returns price below and above threshold """
+        return self.price_below_threshold, self.price_above_threshold
