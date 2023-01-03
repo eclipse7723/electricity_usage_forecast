@@ -1,10 +1,12 @@
 from src.exceptions.ui import *
 from src.ui.gui.graphic_interface import GraphicInterface
+from src.ui.cli.command_line import CommandLineInterface
 
 
 class InterfaceManager:
     interfaces = {
-        "gui": GraphicInterface
+        "gui": GraphicInterface,
+        "cli": CommandLineInterface
     }
 
     @staticmethod
