@@ -26,23 +26,37 @@ class Device:
         self.__usage_day_hours = 0
 
         self.set_usage_day_hours(params.get("usage_day_hours", 0))
-        self.set_usage_days(params.get("usage_days", Period.days))
+        self.set_usage_days(params.get("usage_days", "period"))
         if "watt" in params:
             self.set_watt(params["watt"])
         elif "kWh" in params:
             self.set_kWh(params["kWh"])
         self.set_amount(params.get("amount", 1))
 
+        self._add_observer()
+
     @property
     def usage_days(self):
+        if self.__usage_days == "period":
+            return Period.get_days()
         return self.__usage_days
 
     def set_usage_days(self, days):
-        if days > Period.days:
-            raise ValueError(f"days ({days}) can't be above period ({Period.days})")
+        if days == "period":
+            self._set_usage_days_as_period()
+        else:
+            self._set_usage_days(days)
+
+    def _set_usage_days_as_period(self):
+        self.__usage_days = "period"
+        Device.EVENT_USAGE_DAYS_UPDATE(self, Period.get_days())
+
+    def _set_usage_days(self, days):
+        if days > Period.get_days():
+            raise ValueError(f"days ({days}) can't be above period ({Period.get_days()})")
         if days < 0:
             raise ValueError(f"days ({days}) can't be negative")
-        self.__usage_days = days
+        self.__usage_days = int(days)
         Device.EVENT_USAGE_DAYS_UPDATE(self, days)
 
     @property
@@ -88,3 +102,13 @@ class Device:
 
     def set_name(self, name):
         self.name = name
+
+    # callbacks
+
+    def _add_observer(self):
+        Period.EVENT_UPDATE.addObserver(self._cb_period_update)
+
+    def _cb_period_update(self, days):
+        if self.usage_days > days:
+            self.__usage_days = days
+        return False
