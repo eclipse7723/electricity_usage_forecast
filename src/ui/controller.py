@@ -50,33 +50,23 @@ class Controller:
 
     # public - actions
 
-    def connect_device(self, identity):
+    def connect_device(self, identity: str):
         self._model.devices.add_device(identity)
 
-    def disconnect_device(self, identity):
+    def disconnect_device(self, identity: str):
         self._model.devices.remove_device(identity)
 
-    def change_period(self, days):
+    def change_period(self, days: int):
         self._model.period.update_days(days)
 
-    def change_tariff_threshold(self, threshold):
+    def change_tariff_threshold(self, threshold: float):
         self._model.tariff.change_threshold(threshold)
 
-    def change_tariff_price(self, below_price, above_price):
+    def change_tariff_price(self, below_price: float, above_price: float):
         self._model.tariff.set_price(below_price, above_price)
 
-    # callbacks
-
-    def _add_observers(self):
-        EventCollection.addObserver("onDeviceCardClickedAdd", self._cb_clicked_add)
-        EventCollection.addObserver("onDeviceCardClickedRemove", self._cb_clicked_remove)
-
-    def _cb_clicked_add(self, device_card):
-        identity = device_card.device.identity
+    def increase_device_amount(self, identity: str):
         self._model.devices.increase_device_amount(identity)
-        return False
 
-    def _cb_clicked_remove(self, device_card):
-        identity = device_card.device.identity
+    def decrease_device_amount(self, identity: str):
         self._model.devices.decrease_device_amount(identity)
-        return False
