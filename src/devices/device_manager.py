@@ -24,6 +24,10 @@ class DeviceManager:
         return DeviceManager.devices[identity]
 
     @staticmethod
+    def get_devices():
+        return DeviceManager.devices.values()
+
+    @staticmethod
     def _generate_identity(name):
         identity = f"{name}_{int(time.time())}"
         return identity

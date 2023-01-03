@@ -81,3 +81,6 @@ class Device:
     def set_icon(self, path):
         self.icon_path = path
         Device.EVENT_ICON_CHANGE(self, path)
+
+    def set_name(self, name):
+        self.name = name
