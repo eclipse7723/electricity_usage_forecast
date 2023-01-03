@@ -8,6 +8,12 @@ class EventCollection:
     def get(name):
         return EventCollection.events.get(name)
 
+    @staticmethod
+    def addObserver(name, fn, *args, **kwargs):
+        event = EventCollection.get(name)
+        functor = event.addObserver(fn, *args, **kwargs)
+        return functor
+
 
 class Event:
 
