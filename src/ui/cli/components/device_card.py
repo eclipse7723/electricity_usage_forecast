@@ -1,4 +1,4 @@
-from src.model.period import Period
+from src.ui.cli.components.colors import Colors
 
 
 class DeviceCard:
@@ -18,14 +18,14 @@ class DeviceCard:
 
     def __str__(self):
         device = self.device
-        descr = f" * Device {device.name!r}\n"
-        descr += f"    identity: {device.identity}\n" \
-                 f"      amount: {device.amount}\n" \
-                 f"power (Watt): {device.power}\n" \
-                 f" daily usage: {device.usage_day_hours} hours\n" \
-                 f"  days usage: {device.usage_days}/{Period.get_days()} days\n" \
-                 f"   icon path: {device.icon_path}\n"
-        descr += "".center(30, "-")
+
+        descr = f"* {Colors.wrap('yellow', device.name)} [{Colors.wrap('red', device.identity)}]"
+        template = "\n{param:>16}: {value}"
+        descr += template.format(param="amount", value=Colors.wrap('yellow', device.amount))
+        descr += template.format(param="power (Watt)", value=Colors.wrap('yellow', device.power))
+        descr += template.format(param="daily usage", value=Colors.wrap('yellow', device.usage_day_hours) + " hours")
+        descr += template.format(param="days usage", value=Colors.wrap('yellow', device.usage_days) + " days")
+        descr += template.format(param="icon path", value=Colors.wrap('yellow', device.icon_path))
         return descr
 
     def _edit_instructions(self):
