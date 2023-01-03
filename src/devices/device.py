@@ -1,5 +1,5 @@
 from src.model.period import Period
-from src.settings import DEFAULT_DEVICE_ICON_PATH
+from src.settings import DEFAULT_DEVICE_ICON_PATH, _DEBUG
 from src.event import Event
 
 
@@ -10,6 +10,10 @@ class Device:
     EVENT_USAGE_HOURS_UPDATE = Event("onDeviceUsageHoursUpdate")
     EVENT_POWER_UPDATE = Event("onDevicePowerUpdate")
     EVENT_AMOUNT_UPDATE = Event("onDeviceAmountUpdate")
+
+    if _DEBUG:
+        def __repr__(self):
+            return f"<Device [{self.identity}] {self.name!r}>"
 
     def __init__(self, params):
         self.identity = params["identity"]
