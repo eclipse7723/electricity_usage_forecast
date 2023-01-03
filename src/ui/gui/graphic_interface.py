@@ -1,13 +1,15 @@
 from src.ui.base_interface import BaseInterface
+from src.event import EventCollection
+
 from src.ui.gui.components.frame import Frame
 from src.ui.gui.components.entry import Entry
 from src.ui.gui.components.button import Button
 from src.ui.gui.components.label import Label
+
 from src.ui.gui.blocks.device_card import DeviceCard
+from src.ui.gui.blocks.scroll_frame import HorizontalScrollFrame
 
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
 
 
 class GraphicInterface(BaseInterface, tk.Tk):
@@ -32,11 +34,12 @@ class GraphicInterface(BaseInterface, tk.Tk):
     def _stop(self):
         for frame in self.layers.values():
             frame.remove_widgets()
+        self.destroy()
 
     # LAYOUT ------------------------------------------
 
-    def create_layer(self, name, **params):
-        frame = Frame(name=name, **params)
+    def create_layer(self, name, frame_type=Frame, **params):
+        frame = frame_type(name=name, **params)
         self.layers[frame.name] = frame
         return frame
 
@@ -75,7 +78,8 @@ class GraphicInterface(BaseInterface, tk.Tk):
         period_block.create_widget("entry", Entry, validate="key", validatecommand=(validator2, "%d", "%S"))
 
     def _create_connected_devices_layer(self):
-        layer = self.create_layer("connected_devices")
+        layer = self.create_layer("connected_devices", frame_type=HorizontalScrollFrame)
+        layer.pack(side=tk.TOP, fill=tk.X)
 
         for device in self.controller.get_connected_devices():
             self.__add_connected_device(device)
@@ -120,9 +124,23 @@ class GraphicInterface(BaseInterface, tk.Tk):
 
     # CALLBACKS ------------------------------------------------------------
 
+    def add_observers(self):
+        EventCollection.addObserver("onDeviceCardClickedAdd", self._cb_device_clicked_increase)
+        EventCollection.addObserver("onDeviceCardClickedRemove", self._cb_device_clicked_decrease)
+
+    def _cb_device_clicked_increase(self, device_card):
+        identity = device_card.device.identity
+        self.controller.increase_device_amount(identity)
+        return False
+
+    def _cb_device_clicked_decrease(self, device_card):
+        identity = device_card.device.identity
+        self.controller.decrease_device_amount(identity)
+        return False
+
     # REACTIONS ------------------------------------------------------------
 
-    def add_observers(self):
-        pass
+    def _show_error(self, exception):
+        print("[!!!!]" + str(exception))
 
 
