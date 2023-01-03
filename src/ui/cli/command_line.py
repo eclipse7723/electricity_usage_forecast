@@ -26,7 +26,7 @@ class CommandLineInterface(BaseInterface):
             "remove device": [self.remove_device, "disconnect device"],
             "edit device": [self.edit_my_device, "edit my device (type 'my devices' to view their identities)"],
             "calculate": [self.calculate, "calculate your expected energy consumption and price at this period"],
-            "current period": [self.show_current_period, "shows current period in days"],
+            "show period": [self.show_current_period, "shows current period in days"],
             "change period": [self.change_current_period, "change period"],
             "show tariff": [self.show_tariff, "shows current tariff for kWh with threshold"],
             "change tariff": [self.change_tariff, "change tariff and threshold"]
@@ -59,6 +59,10 @@ class CommandLineInterface(BaseInterface):
         command = input("> ").lower()
 
         if self.is_running() is False:
+            return
+
+        if len(command) == 0:
+            # ignore
             return
 
         if command not in self.commands:
