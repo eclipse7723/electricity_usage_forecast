@@ -1,13 +1,11 @@
 from src.model.model import Model
 from src.devices.device_manager import DeviceManager
-from src.event import EventCollection
 
 
 class Controller:
 
     def __init__(self):
         self._model = Model()
-        self._add_observers()
 
     # public - getters
 
