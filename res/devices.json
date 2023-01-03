@@ -28,13 +28,13 @@
 		"usage_days": 2
 	},
 	"energy_bulb_1": {
-		"name": "Light Bulbs 60W Equivalent, 8W"
+		"name": "Light Bulbs 60W Equivalent, 8W",
 		"watt": 8,
 		"usage_day_hours": 15,
 		"icon_path": "res/icons/light.png"
 	},
 	"energy_bulb_2": {
-		"name": "Light Bulbs 60W Equivalent, 12W"
+		"name": "Light Bulbs 60W Equivalent, 12W",
 		"watt": 12,
 		"usage_day_hours": 15,
 		"icon_path": "res/icons/light.png"
