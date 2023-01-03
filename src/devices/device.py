@@ -34,7 +34,7 @@ class Device:
         return self.__usage_days
 
     def set_usage_days(self, days):
-        if days >= Period.days:
+        if days > Period.days:
             raise ValueError(f"days ({days}) can't be above period ({Period.days})")
         if days < 0:
             raise ValueError(f"days ({days}) can't be negative")
