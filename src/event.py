@@ -3,6 +3,7 @@ import warnings
 
 class EventCollection:
     events = {}
+    observers = {}
 
     @staticmethod
     def get(name):
@@ -19,6 +20,15 @@ class EventCollection:
         for event in EventCollection.events.values():
             event.removeObservers()
 
+    @staticmethod
+    def removeObserver(observer):
+        if observer is None:
+            return
+
+        owner = observer.identity
+        event = EventCollection.get(owner)
+        event.removeObserver(observer)
+
 
 class Event:
 
@@ -28,9 +38,9 @@ class Event:
         EventCollection.events[name] = self
 
     def addObserver(self, fn, *args, **kwargs):
-        functor = Functor(fn, *args, **kwargs)
-        self.observers.append(functor)
-        return functor
+        observer = Observer(self.name, fn, *args, **kwargs)
+        self.observers.append(observer)
+        return observer
 
     def removeObservers(self):
         self.observers = []
@@ -54,8 +64,9 @@ class Event:
             self.removeObserver(observer)
 
 
-class Functor:
-    def __init__(self, fn, *args, **kwargs):
+class Observer:
+    def __init__(self, identity, fn, *args, **kwargs):
+        self.identity = identity
         self.fn = fn
         self.args = args
         self.kwargs = kwargs
