@@ -1,5 +1,6 @@
 from src.ui.controller import Controller
 from src.exceptions.process import AlreadyRunningError, AlreadyStoppedError
+from src.event import EventCollection
 import threading
 
 
@@ -9,6 +10,7 @@ class BaseInterface:
         self.controller = controller()
         self._running = False
         self._active = False
+        self.__observers = []
 
     def _set_params(self):
         return
@@ -16,6 +18,16 @@ class BaseInterface:
     def _show_error(self, exception):
         """ notify user about error """
         raise NotImplementedError
+
+    # utils
+
+    def _add_observer(self, name, cb):
+        self.__observers.append(EventCollection.addObserver(name, cb))
+
+    def _remove_observers(self):
+        for observer in self.__observers:
+            EventCollection.removeObserver(observer)
+        self.__observers = []
 
     # interface flow
 
@@ -54,5 +66,6 @@ class BaseInterface:
 
         self._running = False
         self._stop()
+        self._remove_observers()
         self._active = False
 

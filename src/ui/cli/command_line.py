@@ -2,7 +2,6 @@ from src.ui.base_interface import BaseInterface
 from src.ui.cli.components.device_card import DeviceCard
 from src.ui.cli.components.colors import Colors
 from src.settings import _DEBUG
-from src.event import EventCollection
 
 import traceback
 import os
@@ -33,6 +32,7 @@ class CommandLineInterface(BaseInterface):
         }
         self.my_devices = {device.identity: DeviceCard(device)
                            for device in self.controller.get_connected_devices()}
+        self.__observers = []
 
     def _show_error(self, exception):
         """ notify user about error """
@@ -176,8 +176,8 @@ class CommandLineInterface(BaseInterface):
     # callbacks
 
     def _add_observers(self):
-        EventCollection.addObserver("onDeviceConnect", self._cb_device_connected)
-        EventCollection.addObserver("onDeviceDisconnect", self._cb_device_disconnected)
+        self._add_observer("onDeviceConnect", self._cb_device_connected)
+        self._add_observer("onDeviceDisconnect", self._cb_device_disconnected)
 
     def _cb_device_connected(self, device):
         self.my_devices[device.identity] = DeviceCard(device)
