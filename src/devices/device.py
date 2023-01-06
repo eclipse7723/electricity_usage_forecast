@@ -96,12 +96,37 @@ class Device:
         self.__amount = amount
         Device.EVENT_AMOUNT_UPDATE(self, amount)
 
-    def set_icon(self, path):
+    def set_icon_path(self, path):
         self.icon_path = path
         Device.EVENT_ICON_CHANGE(self, path)
 
     def set_name(self, name):
         self.name = name
+
+    # save\restore
+
+    def get_save(self):
+        """ returns dict with device params """
+        save = {
+            self.identity: {
+                "identity": self.identity,
+                "name": self.name,
+                "icon_path": self.icon_path,
+                "usage_days": self.__usage_days,
+                "usage_day_hours": self.usage_day_hours,
+                "watt": self.power,
+                "amount": self.amount,
+            }
+        }
+        return save
+
+    def update_params(self, params):
+        for param, value in params.items():
+            setter_name = f"set_{param}"
+            if setter_name not in dir(self):
+                continue
+            setter = self.__getattribute__(setter_name)
+            setter(value)
 
     # callbacks
 
