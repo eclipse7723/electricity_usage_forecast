@@ -11,6 +11,7 @@ class DeviceCard:
             "name": device.set_name,
             "hours": device.set_usage_day_hours,
             "days": device.set_usage_days,
+            "icon": device.set_icon_path
         }
 
     def __repr__(self):
