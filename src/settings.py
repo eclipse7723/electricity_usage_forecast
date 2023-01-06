@@ -12,5 +12,6 @@ DEFAULT_DEVICE_ICON_PATH = "res/icons/default.png"
 DEFAULT_DEVICES_SAVE_PATH = "res/connected_devices.json"
 
 # general
+DEFAULT_INTERFACE = "cli"
 _DEBUG = False
 

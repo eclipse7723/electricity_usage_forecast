@@ -1,5 +1,6 @@
 from src.App import App
 from src.ui.interface_manager import InterfaceManager
+from src.settings import DEFAULT_INTERFACE
 
 
 def prepare_managers():
@@ -10,7 +11,7 @@ def prepare_managers():
 if __name__ == "__main__":
     prepare_managers()
 
-    interface = InterfaceManager.get_interface("cli")
+    interface = InterfaceManager.get_interface(DEFAULT_INTERFACE)
     app = App(interface)
 
     app.run()
