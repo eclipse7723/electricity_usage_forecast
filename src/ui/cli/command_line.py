@@ -20,9 +20,11 @@ class CommandLineInterface(BaseInterface):
 
     def _set_params(self):
         self.commands = {
-            "my devices": [self.show_my_devices, "shows your devices"],
             "commands": [self.show_commands, "shows all available commands"],
-            "stop": [self.stop, "stop the program"],
+            "my devices": [self.show_my_devices, "shows all of your devices"],
+            "show device": [self.show_my_device, "shows one connected device"],
+            "save devices": [self.save_devices, "saves all of your connected devices with their settings"],
+            "load devices": [self.load_devices, "loads connected devices from save"],
             "add device": [self.add_device, "connect a new device"],
             "remove device": [self.remove_device, "disconnect device"],
             "edit device": [self.edit_my_device, "edit my device (type 'my devices' to view their identities)"],
@@ -30,7 +32,8 @@ class CommandLineInterface(BaseInterface):
             "show period": [self.show_current_period, "shows current period in days"],
             "change period": [self.change_current_period, "change period"],
             "show tariff": [self.show_tariff, "shows current tariff for kWh with threshold"],
-            "change tariff": [self.change_tariff, "change tariff and threshold"]
+            "change tariff": [self.change_tariff, "change tariff and threshold"],
+            "stop": [self.stop, "stop the program"],
         }
         self.my_devices = {device.identity: DeviceCard(device)
                            for device in self.controller.get_connected_devices()}
@@ -73,10 +76,13 @@ class CommandLineInterface(BaseInterface):
             return
 
         func = self.__get_command_func(command)
-        try:
+        if _DEBUG is True:
             func()
-        except Exception as e:
-            self._show_error(f"{e.__class__.__name__}: {str(e)}")
+        else:
+            try:
+                func()
+            except Exception as e:
+                self._show_error(f"{e.__class__.__name__}: {str(e)}")
 
     # commands
 
@@ -86,6 +92,14 @@ class CommandLineInterface(BaseInterface):
             return
         for card in self.my_devices.values():
             print(str(card))
+
+    def show_my_device(self):
+        identity = input("Identity: ").lower()
+        if identity in self.my_devices:
+            device = self.my_devices[identity]
+            print(str(device))
+        else:
+            self._show_error(f"Device with identity {identity!r} not found in connected devices")
 
     @with_accept_message
     def edit_my_device(self):
@@ -116,6 +130,8 @@ class CommandLineInterface(BaseInterface):
         self._show_tip("Type identity from square brackets to add device")
 
         identity = input("Identity: ").lower()
+        if len(identity) == 0:
+            return
 
         if identity not in [device.identity for device in not_connected_devices]:
             self._show_error(f"Device with id '{identity}' not found")
@@ -173,6 +189,17 @@ class CommandLineInterface(BaseInterface):
         above_price = float(input("New price above threshold: "))
         self.controller.change_tariff_threshold(threshold)
         self.controller.change_tariff_price(below_price, above_price)
+        return True
+
+    @with_accept_message
+    def save_devices(self):
+        self._show_tip(f"Devices will be saved in {self.controller.get_saves_path()!r}")
+        self.controller.save_devices()
+        return True
+
+    @with_accept_message
+    def load_devices(self):
+        self.controller.load_devices()
         return True
 
     # callbacks
