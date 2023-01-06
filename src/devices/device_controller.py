@@ -1,6 +1,11 @@
 from src.devices.device_manager import DeviceManager
-from src.exceptions.device import DeviceNotFound, DeviceAlreadyConnected
+from src.exceptions.device import DeviceNotFound, DeviceAlreadyConnected, NoSavedDevicesError
+from src.settings import DEFAULT_DEVICES_SAVE_PATH
 from src.event import Event
+
+import json
+import os
+import warnings
 
 
 class DeviceController:
@@ -10,6 +15,7 @@ class DeviceController:
 
     def __init__(self):
         self.connected_devices = {}
+        self.saves_path = DEFAULT_DEVICES_SAVE_PATH
 
     def get_devices(self):
         return self.connected_devices.values()
@@ -65,3 +71,43 @@ class DeviceController:
             device.set_amount(device.amount - 1)
 
         return True
+
+    def save_devices(self):
+        """ saves connected devices with their characteristics """
+        saves = {}
+
+        for device in self.connected_devices.values():
+            save = device.get_save()
+            saves.update(save)
+
+        with open(self.saves_path, "w") as f:
+            json.dump(saves, f, indent=4)
+
+    def load_devices(self):
+        """ load saved connected devices from save """
+        if os.path.exists(self.saves_path) is False:
+            raise NoSavedDevicesError(self.saves_path)
+
+        with open(self.saves_path, "r") as f:
+            try:
+                saves = json.load(f)
+            except json.decoder.JSONDecodeError as e:
+                warnings.warn(f"saves from {self.saves_path!r} is empty")
+                saves = {}
+
+        for identity, params in saves.items():
+            if self.has_device(identity) is False:
+                # that device is not connected - connect it first
+
+                if DeviceManager.has_device(identity) is False:
+                    # device is not exists - create
+                    params["identity"] = identity
+                    self.create_device(params)
+
+                # try to connect this device
+                if self.add_device(identity) is False:
+                    warnings.warn(f"can't connect device {identity!r}")
+                    continue
+
+            device = self.get_device(identity)
+            device.update_params(params)
