@@ -16,6 +16,8 @@ def with_accept_message(func):
 
 class CommandLineInterface(BaseInterface):
 
+    alias = "cli"
+
     def _set_params(self):
         self.commands = {
             "my devices": [self.show_my_devices, "shows your devices"],

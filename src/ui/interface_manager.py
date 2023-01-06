@@ -5,8 +5,8 @@ from src.ui.cli.command_line import CommandLineInterface
 
 class InterfaceManager:
     interfaces = {
-        "gui": GraphicInterface,
-        "cli": CommandLineInterface
+        GraphicInterface.alias: GraphicInterface,           # tkinter
+        CommandLineInterface.alias: CommandLineInterface    # command line
     }
 
     @staticmethod

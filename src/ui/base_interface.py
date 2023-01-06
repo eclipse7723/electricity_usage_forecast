@@ -1,10 +1,15 @@
 from src.ui.controller import Controller
 from src.exceptions.process import AlreadyRunningError, AlreadyStoppedError
-from src.event import EventCollection
+from src.event import Event, EventCollection
 import threading
 
 
 class BaseInterface:
+
+    alias = None
+
+    EVENT_START = Event("onInterfaceStart")
+    EVENT_STOP = Event("onInterfaceStop")
 
     def __init__(self, controller=Controller):
         self.controller = controller()
@@ -56,6 +61,8 @@ class BaseInterface:
         threading.Thread(target=self._start).start()
         self._active = True
 
+        self.EVENT_START(self.alias)
+
     def _stop(self):
         """ stop interface (for example, remove all observers, etc.) """
         raise NotImplementedError
@@ -68,4 +75,6 @@ class BaseInterface:
         self._stop()
         self._remove_observers()
         self._active = False
+
+        self.EVENT_STOP(self.alias)
 

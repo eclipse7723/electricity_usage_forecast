@@ -14,6 +14,8 @@ import tkinter as tk
 
 class GraphicInterface(BaseInterface, tk.Tk):
 
+    alias = "gui"
+
     width = 440
     height = 310
 
