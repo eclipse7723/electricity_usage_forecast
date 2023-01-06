@@ -9,7 +9,8 @@ DEFAULT_TARIFF_ABOVE_PRICE = 1.68
 # device
 DEFAULT_DEVICES_PATH = "res/devices.json"
 DEFAULT_DEVICE_ICON_PATH = "res/icons/default.png"
+DEFAULT_DEVICES_SAVE_PATH = "res/connected_devices.json"
 
 # general
-_DEBUG = True
+_DEBUG = False
 
