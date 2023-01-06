@@ -51,9 +51,13 @@ class Controller:
         """ returns price below tariff threshold and above """
         return self._model.tariff.get_price()
 
+    def get_saves_path(self):
+        return self._model.devices.saves_path
+
     # public - actions
 
     def connect_device(self, identity: str):
+        """ Raises DeviceAlreadyConnected is already connected """
         self._model.devices.add_device(identity)
 
     def disconnect_device(self, identity: str):
@@ -73,3 +77,10 @@ class Controller:
 
     def decrease_device_amount(self, identity: str):
         self._model.devices.decrease_device_amount(identity)
+
+    def save_devices(self):
+        self._model.devices.save_devices()
+
+    def load_devices(self):
+        """ Raises NoSavedDevicesError if no saves found """
+        self._model.devices.load_devices()
