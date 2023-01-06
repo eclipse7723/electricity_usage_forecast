@@ -111,3 +111,6 @@ class DeviceController:
 
             device = self.get_device(identity)
             device.update_params(params)
+
+    def set_saves_path(self, path):
+        self.saves_path = path
