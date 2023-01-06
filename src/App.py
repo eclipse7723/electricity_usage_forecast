@@ -1,4 +1,5 @@
 from src.exceptions.process import AlreadyRunningError, AlreadyStoppedError
+from src.event import EventCollection
 
 
 class App:
@@ -19,12 +20,20 @@ class App:
         if self._running is True:
             raise AlreadyRunningError(self.__class__.__name__)
 
+        self.interface.EVENT_STOP.addObserver(self._cb_interface_stop)
         self.interface.start()
         self._running = True
 
     def stop(self):
-        if self._running is True:
+        if self._running is False:
             raise AlreadyStoppedError(self.__class__.__name__)
 
-        self.interface.stop()
+        if self.interface.is_running() is True:
+            self.interface.stop()
+        EventCollection.removeObservers()
         self._running = False
+
+    def _cb_interface_stop(self, alias):
+        if alias == self.interface.alias:
+            self.stop()
+        return False
