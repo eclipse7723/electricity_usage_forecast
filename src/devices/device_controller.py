@@ -113,4 +113,6 @@ class DeviceController:
             device.update_params(params)
 
     def set_saves_path(self, path):
+        if path.endswith(".json") is False:
+            raise Exception(f"save file must be .json, not {path!r}")
         self.saves_path = path
