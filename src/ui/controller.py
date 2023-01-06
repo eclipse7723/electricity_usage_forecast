@@ -23,15 +23,20 @@ class Controller:
         not_connected_devices = list(set(all_devices) - set(connected_devices))
         return not_connected_devices
 
-    def get_period_energy_consumption(self):
-        """ returns consumed energy (in kWh) in current period """
+    def get_period_energy_consumption_watt(self):
+        """ returns consumed energy (in watt) in current period """
         total_watt = self._model.calculate_energy_consumption()
         return total_watt
 
+    def get_period_energy_consumption_kwh(self):
+        """ returns consumed energy (in kWh) in current period """
+        total_kWh = self._model.calculate_energy_consumption() / 1000.0
+        return total_kWh
+
     def get_period_price(self):
         """ returns price of consumed energy in current period """
-        total_watt = self.get_period_energy_consumption()
-        price = self._model.calculate_total_price(total_watt)
+        total_kWh = self.get_period_energy_consumption_kwh()
+        price = self._model.calculate_total_price(total_kWh)
         return price
 
     def get_period(self):

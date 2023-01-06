@@ -143,7 +143,7 @@ class CommandLineInterface(BaseInterface):
         return True
 
     def calculate(self):
-        energy = self.controller.get_period_energy_consumption()
+        energy = self.controller.get_period_energy_consumption_kwh()
         price = self.controller.get_period_price()
         period = self.controller.get_period()
         print(f"Your energy consumption for period of {Colors.wrap('yellow', period)} days"

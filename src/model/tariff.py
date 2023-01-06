@@ -21,12 +21,12 @@ class Tariff:
         self.price_above_threshold = price_above_threshold
         Tariff.EVENT_PRICE_UPDATE(price_below_threshold, price_above_threshold)
 
-    def calculate_price(self, energy):
-        if energy > self.threshold:
+    def calculate_price(self, kWh):
+        if kWh > self.threshold:
             energy_below_threshold = self.threshold
-            energy_above_threshold = energy - self.threshold
+            energy_above_threshold = kWh - self.threshold
         else:
-            energy_below_threshold = energy
+            energy_below_threshold = kWh
             energy_above_threshold = 0
 
         price_below_threshold = energy_below_threshold * self.price_below_threshold
