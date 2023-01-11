@@ -127,18 +127,21 @@ class CommandLineInterface(BaseInterface):
         self._show_tip("List of not connected devices:")
         for device in not_connected_devices:
             print(f" [{Colors.wrap('yellow', device.identity)}] {device.name!r} ({device.power} Watt)")
-        self._show_tip("Type identity from square brackets to add device")
+        self._show_tip("Type identities from square brackets to add device, separated with comma")
 
-        identity = input("Identity: ").lower()
-        if len(identity) == 0:
+        identities = input("Identities: ").lower()
+        if len(identities) == 0:
             return
 
-        if identity not in [device.identity for device in not_connected_devices]:
-            self._show_error(f"Device with id '{identity}' not found")
-            return
+        at_least_one_connected = False
+        for identity in identities.split(", "):
+            if identity not in [device.identity for device in not_connected_devices]:
+                self._show_error(f"Device with id '{identity}' not found")
+                continue
+            self.controller.connect_device(identity)
+            at_least_one_connected = True
 
-        self.controller.connect_device(identity)
-        return True
+        return at_least_one_connected
 
     @with_accept_message
     def remove_device(self):
@@ -148,15 +151,21 @@ class CommandLineInterface(BaseInterface):
             Colors.print("yellow", "No devices to disconnect :(")
             self._show_tip("Type 'add devices' to connect a new device!")
             return
+        self._show_tip("Type identities, separated with comma")
 
-        identity = input("Identity: ").lower()
+        identities = input("Identities: ").lower()
 
-        if identity not in [device.identity for device in connected_devices]:
-            self._show_error(f"Device with id {identity!r} not found in connected devices - type 'my devices' to check")
-            return
+        at_least_one_disconnected = False
+        for identity in identities.split(", "):
+            if identity not in [device.identity for device in connected_devices]:
+                self._show_error(f"Device with id {identity!r} not found in connected devices"
+                                 f" - type 'my devices' to check")
+                return
 
-        self.controller.disconnect_device(identity)
-        return True
+            self.controller.disconnect_device(identity)
+            at_least_one_disconnected = True
+
+        return at_least_one_disconnected
 
     def calculate(self):
         energy = self.controller.get_period_energy_consumption_kwh()
