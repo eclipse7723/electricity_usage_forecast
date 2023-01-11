@@ -24,7 +24,12 @@ class DeviceCard:
         template = "\n{param:>16}: {value}"
         descr += template.format(param="amount", value=Colors.wrap('yellow', device.amount))
         descr += template.format(param="power (Watt)", value=Colors.wrap('yellow', device.power))
-        descr += template.format(param="daily usage", value=Colors.wrap('yellow', device.usage_day_hours) + " hours")
+        if device.usage_day_hours < 1:
+            descr += template.format(param="daily usage",
+                                     value=Colors.wrap('yellow', device.usage_day_hours*60) + " minutes")
+        else:
+            descr += template.format(param="daily usage",
+                                     value=Colors.wrap('yellow', device.usage_day_hours) + " hours")
         descr += template.format(param="days usage", value=Colors.wrap('yellow', device.usage_days) + " days")
         descr += template.format(param="icon path", value=Colors.wrap('yellow', device.icon_path))
         return descr
