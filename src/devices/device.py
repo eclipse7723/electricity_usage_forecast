@@ -93,7 +93,7 @@ class Device:
     def set_amount(self, amount):
         if amount < 1:
             raise ValueError(f"amount should be >= 1, not {amount}")
-        self.__amount = amount
+        self.__amount = int(amount)
         Device.EVENT_AMOUNT_UPDATE(self, amount)
 
     def set_icon_path(self, path):
