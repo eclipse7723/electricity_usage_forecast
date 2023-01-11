@@ -38,5 +38,34 @@
 		"watt": 12,
 		"usage_day_hours": 15,
 		"icon_path": "res/icons/light.png"
+	},
+	"multicooker_1": {
+		"name": "Multicooker REDMOND",
+		"kWh": 0.3,
+		"usage_day_hours": 1,
+		"usage_days": 9
+	},
+	"kettle_1": {
+		"name": "Electric Kettle Zelmer Crystal",
+		"kWh": 2,
+		"usage_day_hours": 0.05
+	},
+	"induct_cooker_1_medium": {
+		"name": "Induction Cooker (medium)",
+		"kWh": 2,
+		"usage_day_hours": 0.25,
+		"usage_days": 9
+	},
+	"induct_cooker_1_small": {
+		"name": "Induction Cooker (small)",
+		"kWh": 1,
+		"usage_day_hours": 0.5,
+		"usage_days": 9
+	},
+	"washer": {
+		"name": "Washer",
+		"kWh": 1.5,
+		"usage_day_hours": 1.5,
+		"usage_days": 5
 	}
 }
