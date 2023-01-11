@@ -74,7 +74,7 @@ class Device:
         return self.__power
 
     def set_kWh(self, kwh):
-        power = kwh * 100.0
+        power = kwh * 1000.0
         self._set_power(power)
 
     def set_watt(self, watt):
