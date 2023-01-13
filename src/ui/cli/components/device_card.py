@@ -35,8 +35,8 @@ class DeviceCard:
         return descr
 
     def _edit_instructions(self):
-        print("To edit device type 'param' and new value. Example: 'amount 2'")
-        print("Type 'done' to stop edit process. List of editable params:")
+        print(f"To edit device type 'param' and new value. Example: {Colors.wrap('yellow', 'amount 2')}")
+        print(f"Type {Colors.wrap('green', 'done')} to stop edit process. List of editable params:")
         for param in self._editable.keys():
             print(f" - {param}")
 
