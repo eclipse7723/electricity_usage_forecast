@@ -24,14 +24,19 @@ class DeviceCard:
         template = "\n{param:>16}: {value}"
         descr += template.format(param="amount", value=Colors.wrap('yellow', device.amount))
         descr += template.format(param="power (Watt)", value=Colors.wrap('yellow', device.power))
-        descr += template.format(param="daily usage", value=Colors.wrap('yellow', device.usage_day_hours) + " hours")
+        if device.usage_day_hours < 1:
+            descr += template.format(param="daily usage",
+                                     value=Colors.wrap('yellow', device.usage_day_hours*60) + " minutes")
+        else:
+            descr += template.format(param="daily usage",
+                                     value=Colors.wrap('yellow', device.usage_day_hours) + " hours")
         descr += template.format(param="days usage", value=Colors.wrap('yellow', device.usage_days) + " days")
         descr += template.format(param="icon path", value=Colors.wrap('yellow', device.icon_path))
         return descr
 
     def _edit_instructions(self):
-        print("To edit device type 'param' and new value. Example: 'amount 2'")
-        print("Type 'done' to stop edit process. List of editable params:")
+        print(f"To edit device type 'param' and new value. Example: {Colors.wrap('yellow', 'amount 2')}")
+        print(f"Type {Colors.wrap('green', 'done')} to stop edit process. List of editable params:")
         for param in self._editable.keys():
             print(f" - {param}")
 
