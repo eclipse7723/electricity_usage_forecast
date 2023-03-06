@@ -15,3 +15,9 @@ DEFAULT_DEVICES_SAVE_PATH = "res/connected_devices.json"
 DEFAULT_INTERFACE = "cli"
 _DEBUG = False
 
+MANAGERS = [
+    ("src.devices.device_manager", "DeviceManager"),
+    ("src.ui.interface_manager", "InterfaceManager"),
+    ("src.ui.cli.commands.command_manager", "CommandManager"),
+]
+
