@@ -1,13 +1,18 @@
+from src.manager import Manager
 from src.exceptions.ui import *
 from src.ui.gui.graphic_interface import GraphicInterface
 from src.ui.cli.command_line import CommandLineInterface
 
 
-class InterfaceManager:
+class InterfaceManager(Manager):
     interfaces = {
         GraphicInterface.alias: GraphicInterface,           # tkinter
         CommandLineInterface.alias: CommandLineInterface    # command line
     }
+
+    @classmethod
+    def _finalize(cls):
+        cls.interfaces = {}
 
     @staticmethod
     def has_interface(name):

@@ -1,3 +1,4 @@
+from src.manager import Manager
 from src.settings import DEFAULT_DEVICES_PATH
 from src.exceptions.device import DeviceNotFound, WrongDeviceParams
 from src.devices.device import Device
@@ -7,11 +8,19 @@ import time
 import os
 
 
-class DeviceManager:
+class DeviceManager(Manager):
 
     EVENT_CREATE_DEVICE = Event("onDeviceCreate")
 
     devices = {}
+
+    @classmethod
+    def _initialize(cls):
+        cls.create_devices()
+
+    @classmethod
+    def _finalize(cls):
+        cls.devices = {}
 
     @staticmethod
     def has_device(identity):
