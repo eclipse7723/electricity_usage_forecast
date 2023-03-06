@@ -1,9 +1,10 @@
 from src.exceptions.process import AlreadyRunningError, AlreadyStoppedError
-from src.event import EventCollection
+from src.event import Event
 
 
 class App:
 
+    EVENT_APP_FINALIZED = Event("onAppFinalized")
     __instance = None
 
     def __new__(cls, interface, *args, **kwargs):
@@ -30,8 +31,12 @@ class App:
 
         if self.interface.is_running() is True:
             self.interface.stop()
-        EventCollection.removeObservers()
         self._running = False
+
+        self._finalize()
+
+    def _finalize(self):
+        App.EVENT_APP_FINALIZED()
 
     def _cb_interface_stop(self, alias):
         if alias == self.interface.alias:
