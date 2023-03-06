@@ -7,7 +7,7 @@ class InterfaceNotFoundError(Exception):
 # ------- Command Line Interface ---------------------------------------------------------------------------------------
 
 
-class CLICommandTestFailed(Exception):
-    def __init__(self, name, fail_description):
-        exception_message = f"Command {name!r} failed its test: {fail_description}"
+class CLICommandNotInitialized(Exception):
+    def __init__(self, cls):
+        exception_message = f"Command {cls.__name__!r} not initialized"
         super().__init__(exception_message)
