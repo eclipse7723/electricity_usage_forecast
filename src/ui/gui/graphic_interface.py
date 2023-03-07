@@ -142,7 +142,7 @@ class GraphicInterface(BaseInterface, tk.Tk):
 
     # REACTIONS ------------------------------------------------------------
 
-    def _show_error(self, exception):
+    def show_error(self, exception):
         print("[!!!!]" + str(exception))
 
 
