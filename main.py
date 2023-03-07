@@ -1,6 +1,6 @@
 from src.App import App
 from src.ui.interface_manager import InterfaceManager
-from src.settings import DEFAULT_INTERFACE
+from src.settings import DEFAULT_INTERFACE, _DEBUG
 
 
 def finalize():
@@ -11,8 +11,14 @@ def finalize():
         manager = import_type(module, name)
         manager.finalize()
 
+        if _DEBUG:
+            print(f"{name} finalized")
+
     from src.event import EventCollection
     EventCollection.removeObservers()
+    if _DEBUG:
+        print(f"removed all observers")
+
     return True
 
 
