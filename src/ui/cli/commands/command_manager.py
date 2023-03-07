@@ -76,8 +76,6 @@ class CommandManager(Manager):
     def _import_command(module, name):
         Command = import_type(f"{_module}.{module}", name)
 
-        print(f"IMPORT COMMAND {module} {name} -> {Command}")
-
         if Command is None:
             return None
 
@@ -90,6 +88,10 @@ class CommandManager(Manager):
 
 
 class CustomCommand(BaseCommand):
+
+    def __init__(self):
+        super().__init__()
+        self._func = None
 
     def initialize(self, alias, description, func):
         self.alias = alias
