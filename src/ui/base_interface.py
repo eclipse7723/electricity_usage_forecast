@@ -20,7 +20,7 @@ class BaseInterface:
     def _set_params(self):
         return
 
-    def _show_error(self, exception):
+    def show_error(self, exception):
         """ notify user about error """
         raise NotImplementedError
 
