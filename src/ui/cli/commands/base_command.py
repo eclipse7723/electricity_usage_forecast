@@ -26,7 +26,7 @@ class BaseCommand:
     def set_interface(self, interface):
         self._interface = interface
 
-    def initialize(self):
+    def initialize(self, **kwargs):
         self._setup_params()
         self._initialize()
 
@@ -38,7 +38,7 @@ class BaseCommand:
 
     def finalize(self):
         self._finalize()
-        self.interface = None
+        self._interface = None
         self._initialized = False
 
     def test(self):
