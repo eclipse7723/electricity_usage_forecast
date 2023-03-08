@@ -4,6 +4,10 @@ from src.exceptions.device import NoSavedDevicesError
 
 class CommandDeviceLoad(BaseCommand):
 
+    def _setup_params(self):
+        self.alias = "load devices"
+        self.description = "loads connected devices from save"
+
     @with_accept_message
     def _activate(self, *args, **kwargs):
         try:
@@ -13,7 +17,3 @@ class CommandDeviceLoad(BaseCommand):
             return False
 
         return True
-
-    def _setup_params(self):
-        self.alias = "load devices"
-        self.description = "loads connected devices from save"

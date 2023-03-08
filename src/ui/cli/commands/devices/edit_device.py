@@ -4,6 +4,10 @@ from src.ui.cli.commands.command_manager import CommandManager
 
 class CommandDeviceEdit(BaseCommand):
 
+    def _setup_params(self):
+        self.alias = "edit device"
+        self.description = f"edit my connected device"
+
     @with_accept_message
     def _activate(self, *args, **kwargs):
         if len(self._interface.my_devices) == 0:
@@ -30,7 +34,3 @@ class CommandDeviceEdit(BaseCommand):
         error_msg = f"Device with identity {identity!r} not connected. " \
                     f"Type '{my_devices_command.alias}' to view identities of your connected devices."
         self._interface.show_error(error_msg)
-
-    def _setup_params(self):
-        self.alias = "edit device"
-        self.description = f"edit my connected device"
