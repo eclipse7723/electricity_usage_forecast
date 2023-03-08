@@ -145,4 +145,7 @@ class GraphicInterface(BaseInterface, tk.Tk):
     def show_error(self, exception):
         print("[!!!!]" + str(exception))
 
+    def show_tip(self, text):
+        print(f"[*] {text}")
+
 
