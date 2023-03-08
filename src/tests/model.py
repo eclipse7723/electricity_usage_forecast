@@ -19,6 +19,15 @@ TEST_DEVICE_PARAMS = dict(
 )
 
 
+TEST_DEVICE_PERIOD_USAGE = (DAYS_PERIOD * TEST_DEVICE_PARAMS["usage_day_hours"]) * \
+                           TEST_DEVICE_PARAMS["amount"] * TEST_DEVICE_PARAMS["kWh"]
+if TEST_DEVICE_PERIOD_USAGE > TARIFF_THRESHOLD:
+    TEST_DEVICE_PERIOD_PRICE = (TARIFF_THRESHOLD * TARIFF_BELOW_PRICE) + \
+                               (TEST_DEVICE_PERIOD_USAGE - TARIFF_THRESHOLD) * TARIFF_ABOVE_PRICE
+else:
+    TEST_DEVICE_PERIOD_PRICE = TEST_DEVICE_PERIOD_USAGE * TARIFF_BELOW_PRICE
+
+
 class TestModel(unittest.TestCase):
 
     def setUp(self):
@@ -78,6 +87,8 @@ class TestModel(unittest.TestCase):
     def test_price_calculate(self):
         kWh = self.model.calculate_energy_consumption() / 1000.0
         self.assertGreater(kWh, 0, "Impossible to have <= 0 consumed energy")
+        self.assertAlmostEqual(TEST_DEVICE_PERIOD_USAGE, kWh, 1, "Wrong calculated usage for period")
 
         price = self.model.calculate_total_price(kWh)
         self.assertGreater(price, 0, "Impossible to have <= 0 price")
+        self.assertAlmostEqual(TEST_DEVICE_PERIOD_PRICE, price, 1, "Wrong calculated price")
