@@ -1,9 +1,9 @@
 import unittest
 from src.model.model import Model
-from src.tests.test_data import *
+from src.tests.data.test_data import *
 
 
-class TestModel(unittest.TestCase):
+class ModelTests(unittest.TestCase):
 
     def setUp(self):
         model = Model()
