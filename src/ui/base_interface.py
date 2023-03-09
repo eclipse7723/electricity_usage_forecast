@@ -24,6 +24,10 @@ class BaseInterface:
         """ notify user about error """
         raise NotImplementedError
 
+    def show_tip(self, text):
+        """ shows useful tips for user """
+        raise NotImplementedError
+
     # utils
 
     def _add_observer(self, name, cb):

@@ -4,6 +4,10 @@ from src.ui.cli.components.colors import Colors
 
 class CommandDeviceAdd(BaseCommand):
 
+    def _setup_params(self):
+        self.alias = "add device"
+        self.description = "connect a new device"
+
     @with_accept_message
     def _activate(self, *args, **kwargs):
         not_connected_devices = self._interface.controller.get_not_connected_devices()
@@ -30,7 +34,3 @@ class CommandDeviceAdd(BaseCommand):
             at_least_one_connected = True
 
         return at_least_one_connected
-
-    def _setup_params(self):
-        self.alias = "add device"
-        self.description = "connect a new device"

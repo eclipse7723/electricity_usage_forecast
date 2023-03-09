@@ -5,6 +5,10 @@ from src.ui.cli.commands.command_manager import CommandManager
 
 class CommandDeviceRemove(BaseCommand):
 
+    def _setup_params(self):
+        self.alias = "remove device"
+        self.description = "disconnect device"
+
     @with_accept_message
     def _activate(self, *args, **kwargs):
         connected_devices = self._interface.controller.get_connected_devices()
@@ -40,7 +44,3 @@ class CommandDeviceRemove(BaseCommand):
 
         Colors.print("yellow", "No devices to disconnect :(")
         self._interface.show_tip(f"Type '{add_device_command.alias}' to connect a new device!")
-
-    def _setup_params(self):
-        self.alias = "remove device"
-        self.description = "disconnect device"

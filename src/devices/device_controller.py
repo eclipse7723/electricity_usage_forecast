@@ -1,5 +1,5 @@
 from src.devices.device_manager import DeviceManager
-from src.exceptions.device import DeviceNotFound, DeviceAlreadyConnected, NoSavedDevicesError
+from src.exceptions.device import *
 from src.settings import DEFAULT_DEVICES_SAVE_PATH
 from src.event import Event
 
@@ -47,6 +47,10 @@ class DeviceController:
             return True
         except KeyError:
             return False
+
+    def remove_all(self):
+        for device in self.get_devices():
+            self.remove_device(device.identity)
 
     def create_device(self, params):
         device = DeviceManager.create_device(params)
@@ -114,5 +118,5 @@ class DeviceController:
 
     def set_saves_path(self, path):
         if path.endswith(".json") is False:
-            raise Exception(f"save file must be .json, not {path!r}")
+            raise TypeError(f"save file must be .json, not {path!r}")
         self.saves_path = path
