@@ -84,6 +84,9 @@ class RandomDeviceGenerator:
         else:
             device_params = self._generate_normal_params(num)
 
+        if device_params["usage_days"] == DAYS_PERIOD:
+            device_params["usage_days"] = "period"
+
         return device_params
 
     def _generate_normal_params(self, num):
@@ -93,7 +96,7 @@ class RandomDeviceGenerator:
             name=self.name_template.format(num=num),
             identity=self.identity_template.format(num=num),
             usage_day_hours=random.randint(0, 24),
-            usage_days=random.randint(0, DAYS_PERIOD+5),
+            usage_days=random.randint(0, DAYS_PERIOD),
             amount=random.randint(1, 100),
         )
 
