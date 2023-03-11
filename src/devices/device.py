@@ -78,7 +78,7 @@ class Device:
         self._set_power(power)
 
     def set_watt(self, watt):
-        self._set_power(watt)
+        self._set_power(float(watt))
 
     def _set_power(self, power):
         if power < 0:
