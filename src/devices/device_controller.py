@@ -49,8 +49,8 @@ class DeviceController:
             return False
 
     def remove_all(self):
-        for device in self.get_devices():
-            self.remove_device(device.identity)
+        for identity in [device.identity for device in self.get_devices()]:
+            self.remove_device(identity)
 
     def create_device(self, params):
         device = DeviceManager.create_device(params)
